@@ -3,6 +3,7 @@
 #include <fstream>
 #include <chrono>
 #include <random>
+#include <unistd.h>
 
 #include "Xorshift_trie.hpp"
 
@@ -63,8 +64,17 @@ void MakeTimeKeysets(int size) {
     }
 }
 
+inline uint64_t get_process_size() {
+    FILE* fp = std::fopen("/proc/self/statm", "r");
+    uint64_t dummy(0), vm(0);
+    std::fscanf(fp, "%ld %ld ", &dummy, &vm);  // get resident (see procfs)
+    std::fclose(fp);
+    return vm * ::getpagesize();
+}
+
 int main(int argc, char* argv[]){
     key_set();
+    uint64_t size_begin = get_process_size();
     kuroda::xorshift_trie xorshift_try;//ハッシュトライ呼び出し
     std::cout << "------experiment_start---------- " <<std::endl;
     Stopwatch sw;
@@ -72,10 +82,12 @@ int main(int argc, char* argv[]){
         xorshift_try.xor_try(str);//1単語ずつ追加(str)
     }
     auto time = sw.get_milli_sec();
+    auto memory = get_process_size() - size_begin;
     std::cout << "constract time : " << time << std::endl;
     std::cout << "node : " << xorshift_try.node_count << std::endl;
     std::cout << "replace_time : " << xorshift_try.re_take << std::endl;
     std::cout << "mask : " << xorshift_try.mask << std::endl;
+    std::cout << "memory : " << memory << "[bytes]" << std::endl;
     xorshift_try.display();
     double time_sum = 0.0;
     for(int i=0; i < 10; i++) {
