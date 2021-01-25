@@ -37,9 +37,6 @@ bool contains(const std::string& str)const{//文字列strが辞書にあるか�
 int64_t word = 0;
 void insert(const std::string& str){ // 文字列strを辞書に追加
     int64_t node = 0;
-     if(word % 100000 == 0){
-        std::cout << word << "\n";
-     }
     for (uint8_t c : str) {
         int64_t new_node = ht.get(create_key(node,c));
         if(new_node !=  HashTable::invalid){
@@ -57,7 +54,6 @@ void insert(const std::string& str){ // 文字列strを辞書に追加
 
     }
     node_count++;
-    word++;
     ht.set(create_key(node,kLeafChar),node_count);//終端文字の遷移を格納
    // ht.display();
 

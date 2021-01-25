@@ -77,11 +77,11 @@ inline uint64_t get_process_size() {
 
 int main(int argc, char* argv[]){
     key_set();
-    /*
-    uint64_t size_begin = get_process_size();
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
     kuroda::xorshift_trie xorshift_try;//Xorshiftトライ呼び出し
     std::cout << "------experiment_start---------- " <<std::endl;
     std::cout << "------Xorshift---------- " <<std::endl;
+    uint64_t size_begin = get_process_size();
     Stopwatch sw;
     for(const std::string& str : str_list) {//配列の単語数
         xorshift_try.xor_try(str);//1単語ずつ追加(str)
@@ -89,9 +89,9 @@ int main(int argc, char* argv[]){
     auto time = sw.get_milli_sec();
     auto memory = get_process_size() - size_begin;
     std::cout << "constract time : " << time << "[ms]" << std::endl;
-    std::cout << "node : " << xorshift_try.node_count << std::endl;
-    std::cout << "replace_time : " << xorshift_try.re_take << std::endl;
-    std::cout << "mask : " << xorshift_try.mask << std::endl;
+    //std::cout << "node : " << xorshift_try.node_count << std::endl;
+    //std::cout << "replace_time : " << xorshift_try.re_take << std::endl;
+    //std::cout << "mask : " << xorshift_try.mask << std::endl;
     std::cout << "memory : " << memory << "[bytes]" << std::endl;
     xorshift_try.display();
     double time_sum = 0.0;
@@ -118,25 +118,24 @@ int main(int argc, char* argv[]){
     }
     std::cout << "search_time_averave : " << time_sum/10.0 << "[ms]" << std::endl;
     std::cout << "1 key search_time : " << time_sum/1000.0 << "[μs]" <<  std::endl;
-    */
-    
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    kuroda::hash_trie hash_try;//hashtableトライ呼び出し
     std::cout << "------experiment_start---------- " <<std::endl;
     std::cout << "------hashtable---------- " <<std::endl;
-    uint64_t size_begin = get_process_size();
-    kuroda::hash_trie hash_try;//hashtableトライ呼び出し
-    Stopwatch sw;
+    uint64_t size_begin2 = get_process_size();
+    Stopwatch sw2;
     for(const std::string& str : str_list) {//配列の単語数
         hash_try.insert(str);//1単語ずつ追加(str)
     }
-    auto time = sw.get_milli_sec();
-    auto memory = get_process_size() - size_begin;
-    std::cout << "constract time : " << time << "[ms]" << std::endl;
-    std::cout << "memory : " << memory << "[bytes]" << std::endl;
-    double time_sum = 0.0;
+    auto time2 = sw2.get_milli_sec();
+    auto memory2 = get_process_size() - size_begin2;
+    std::cout << "constract time : " << time2 << "[ms]" << std::endl;
+    std::cout << "memory : " << memory2 << "[bytes]" << std::endl;
+    double time_sum2 = 0.0;
     for(int i=0; i < 10; i++) {
       //std::cout << " keisoku " << i << std::endl;
       MakeTimeKeysets(str_list.size());
-      Stopwatch search_time;
+      Stopwatch search_time2;
       for(const std::string& str : time_keysets) {//配列の単語数
           //bool check = xorshift_try.contains_all(str_list, n);
           bool check = hash_try.contains(str);
@@ -149,10 +148,10 @@ int main(int argc, char* argv[]){
           }
           
       }
-      time = search_time.get_milli_sec();
-      time_sum += time;
+      time2 = search_time2.get_milli_sec();
+      time_sum2 += time2;
     }
-    std::cout << "search_time_averave : " << time_sum/10.0 << "[ms]" << std::endl;
-    std::cout << "1 key search_time : " << time_sum/1000.0 << "[μs]" <<  std::endl;
+    std::cout << "search_time_averave : " << time_sum2/10.0 << "[ms]" << std::endl;
+    std::cout << "1 key search_time : " << time_sum2/1000.0 << "[μs]" <<  std::endl;
     return 0;//プログラム終了
 }
