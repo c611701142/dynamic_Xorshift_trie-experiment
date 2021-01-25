@@ -6,7 +6,7 @@
 #include <unistd.h>
 
 #include "Xorshift_trie.hpp"
-//#include "hash_trie.hpp"
+#include "hash_trie.hpp"
 //#include "dynamic_doublle_array.hpp"
 
 namespace {
@@ -42,8 +42,8 @@ std::vector<std::string> time_keysets;
 std::vector<std::string> str_list;
 void key_set(){
     //std::string input_name = "s2.txt";
-    //std::string input_name = "wordnet-3.0-word";
-    std::string input_name = "ipadic-word";
+    std::string input_name = "wordnet-3.0-word";
+    //std::string input_name = "ipadic-word";
     //std::string input_name = "jawiki-20150118.line";
     //std::string input_name = "enwiki-20150205.line";
     std::ifstream ifs(input_name);
@@ -77,6 +77,7 @@ inline uint64_t get_process_size() {
 
 int main(int argc, char* argv[]){
     key_set();
+    /*
     uint64_t size_begin = get_process_size();
     kuroda::xorshift_trie xorshift_try;//Xorshiftトライ呼び出し
     std::cout << "------experiment_start---------- " <<std::endl;
@@ -117,7 +118,8 @@ int main(int argc, char* argv[]){
     }
     std::cout << "search_time_averave : " << time_sum/10.0 << "[ms]" << std::endl;
     std::cout << "1 key search_time : " << time_sum/1000.0 << "[μs]" <<  std::endl;
-    /*
+    */
+    
     std::cout << "------experiment_start---------- " <<std::endl;
     std::cout << "------hashtable---------- " <<std::endl;
     uint64_t size_begin = get_process_size();
@@ -152,6 +154,5 @@ int main(int argc, char* argv[]){
     }
     std::cout << "search_time_averave : " << time_sum/10.0 << "[ms]" << std::endl;
     std::cout << "1 key search_time : " << time_sum/1000.0 << "[μs]" <<  std::endl;
-    */
     return 0;//プログラム終了
 }
