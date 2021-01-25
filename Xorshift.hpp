@@ -26,8 +26,8 @@ Xorshift(){
 private:
 std::vector<int> B_ = {13,-7,5};//ビットシフトパターン
 std::vector<int> B_1 = {5,-7,13};//ビットシフトパターン(逆関数用)
-//std::vector<int> B_ = {7,-30,1};//ビットシフトパターン
-//std::vector<int> B_1 = {1,-30,7};//ビットシフトパターン(逆関数用)
+//std::vector<int> B_ = {2,-1,1};//ビットシフトパターン
+//std::vector<int> B_1 = {1,-1,2};//ビットシフトパターン(逆関数用)
 //先行研究のビットシフトパターン
 //{26,-5,6}{7,-30,1}{7,-6}
 uint64_t hash_use = 1;//配列P,C の使用数
@@ -72,9 +72,6 @@ int64_t replace(uint64_t node,std::vector<int64_t>& place,std::vector<DataItem>&
     if (place[node] != invalid){//再配置済みの時、無視
         return invalid;
     }
-    if(k > 32){
-        //std::cout << " lllllll " << std::endl;
-    }
     uint64_t seed = get_seed(node);
     uint8_t c = seed % 256;
     int parent = seed >> 8;
@@ -91,6 +88,9 @@ int64_t replace(uint64_t node,std::vector<int64_t>& place,std::vector<DataItem>&
         new_node = x1 >> 8;
         collision++;
     } 
+    if(collision > 50){
+        std::cout << "   " << collision <<  std::endl;
+    }
     int parity = x1 % 256;
     pc_2[new_node].p = parity;
     pc_2[new_node].c = collision;
@@ -172,7 +172,6 @@ uint64_t set(uint64_t node,uint8_t c){//引数 : シード値
     //std::cout << load_factor <<  " % " << std::endl;
     //keyによる探索の期待計算量が、負荷率をqとしてO(1/(1-q))になる
     if(load_factor >= 50){
-        //std::cout << replace_time << "\n";
         replace_time++;
         node = expand(node);
         load_factor = hash_use*100/pc_.size();
