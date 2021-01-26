@@ -32,7 +32,7 @@ private://クラスメンバ変数
 int64_t hash_use = 0;//ハッシュテーブルの要素の使用数
 /* DataItemの定義 */
 struct DataItem {
-    int key,value;
+    int64_t key,value;
     DataItem(): key(invalid),value(invalid){}
 };
 std::vector<DataItem> hashArray;//ハッシュテーブル
