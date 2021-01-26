@@ -24,10 +24,10 @@ Xorshift(){
 }
 
 private:
-std::vector<int> B_ = {13,-7,5};//ビットシフトパターン
-std::vector<int> B_1 = {5,-7,13};//ビットシフトパターン(逆関数用)
-//std::vector<int> B_ = {2,-1,1};//ビットシフトパターン
-//std::vector<int> B_1 = {1,-1,2};//ビットシフトパターン(逆関数用)
+//std::vector<int> B_ = {13,-7,5};//ビットシフトパターン
+//std::vector<int> B_1 = {5,-7,13};//ビットシフトパターン(逆関数用)
+std::vector<int> B_ = {2,-1,1};//ビットシフトパターン
+std::vector<int> B_1 = {1,-1,2};//ビットシフトパターン(逆関数用)
 //先行研究のビットシフトパターン
 //{26,-5,6}{7,-30,1}{7,-6}
 uint64_t hash_use = 1;//配列P,C の使用数
@@ -168,13 +168,10 @@ uint64_t create_seed(uint64_t node, uint8_t c)const{
 public:
 //配列P,Cに要素を格納、衝突が起これば再配置
 uint64_t set(uint64_t node,uint8_t c){//引数 : シード値
-    int load_factor = hash_use*100/pc_.size();
-    //std::cout << load_factor <<  " % " << std::endl;
     //keyによる探索の期待計算量が、負荷率をqとしてO(1/(1-q))になる
-    if(load_factor >= 50){
+    if(hash_use * 2 >= pc_.size()){
         replace_time++;
         node = expand(node);
-        load_factor = hash_use*100/pc_.size();
     }
     uint64_t seed = create_seed(node,c);
     //std::cout << node <<  "    " << c << std::endl;

@@ -22,6 +22,8 @@ int64_t create_key(int64_t node, uint8_t c) const {
 int64_t node_count = 0;
 
 public:
+double c_averave  = 0;
+int64_t c_zero = 0;
 
 bool contains(const std::string& str)const{//文字列strが辞書にあるかどうか検索
     int64_t node = 0; // root
@@ -37,7 +39,12 @@ bool contains(const std::string& str)const{//文字列strが辞書にあるか�
 int64_t word = 0;
 void insert(const std::string& str){ // 文字列strを辞書に追加
     int64_t node = 0;
+    word++;
+    if(word % 100000 == 0){
+        //std::cout << str << word << "\n";
+    }
     for (uint8_t c : str) {
+        //std::cout << c << "\n";
         int64_t new_node = ht.get(create_key(node,c));
         if(new_node !=  HashTable::invalid){
             node = new_node;
@@ -55,6 +62,8 @@ void insert(const std::string& str){ // 文字列strを辞書に追加
     }
     node_count++;
     ht.set(create_key(node,kLeafChar),node_count);//終端文字の遷移を格納
+    c_averave = (double)ht.collision_sum/(double)ht.hashArray.size();
+    c_zero = ht.collision_zero;
    // ht.display();
 
 }

@@ -22,7 +22,8 @@ private:
 public:
 //int node_count = 0; 
 //int common = 0;
-int c_max = 0;
+double c_ave = 0;
+uint64_t c_zero = 0;
 //int mask;
 //int re_take;
 
@@ -79,18 +80,19 @@ void xor_try(const std::string& str) {
 }
 
 void display(){
+    uint64_t c_sum = 0;
     for(uint64_t i = 1; i < shift.pc_.size();i++){
         //使用要素のみ表示
         if(shift.exists[i]){
-            if(c_max < shift.pc_[i].c){
-                c_max = shift.pc_[i].c;
+            if(shift.pc_[i].c == 0){
+                c_zero++;
             }
-            //std::cout << i << "       ";
-            //std::cout << shift.pc_[i].p << "  |  " << shift.pc_[i].c << "  " << std::endl;
-            //配列番号
+            c_sum += shift.pc_[i].c;
         }
     }
-    std::cout << "collision_max" << c_max << std::endl;
+    double ave = (double)c_sum/(double)shift.pc_.size();
+    std::cout << "collision_average" << ave << std::endl;
+    std::cout << "collision_zero" << c_zero << std::endl;
     //std::cout << "mask :" << k << std::endl;
 }
 

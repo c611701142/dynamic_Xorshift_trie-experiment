@@ -20,17 +20,17 @@ public:
 //ハッシュテーブルの要素数の初期値
 static constexpr int dell = -2;//データが入っていたがそれが削除されたことを示す値
 static constexpr int64_t invalid = -1;
-static constexpr int64_t default_size = 1ull << 6;
+static constexpr int64_t default_size = 1ull << 4;
 int64_t k = (std::log(default_size)/std::log(2));//mask値の決定のため、P, C 拡張時にインクリメント
+int64_t collision_sum = 0;
+int64_t collision_zero = 0;
+
 HashTable(){
 	hashArray.resize(default_size);
 	exists.resize(default_size,false);
     exists[0] = true;//0番目は使わない
 }
 
-private://クラスメンバ変数
-int64_t hash_use = 0;//ハッシュテーブルの要素の使用数
-/* DataItemの定義 */
 struct DataItem {
     int64_t key,value;
     DataItem(): key(invalid),value(invalid){}
@@ -38,6 +38,8 @@ struct DataItem {
 std::vector<DataItem> hashArray;//ハッシュテーブル
 std::vector<bool> exists;//空判定配列
 
+private://クラスメンバ変数
+int64_t hash_use = 0;//ハッシュテーブルの要素の使用数
 /* ハッシュ関数*/
 int64_t hashCode(int64_t key)const{
     int64_t maskXos_ = 1ull << k;
@@ -64,12 +66,15 @@ int64_t get(int64_t key)const{
 //「空状態」バケットを調べていき、空いているバケットを発見したらデータを格納します。
 void set(int64_t key, int64_t value){
     //std::cout << "before_expand" << load_factor << "%" << std::endl;
-
+       
     //keyによる探索の期待計算量が、負荷率をqとしてO(1/(1-q))になる
     if(hash_use * 2 >= hashArray.size()){
         //std::cout << "ex_bagin " << std::endl;
         k++;
+        collision_sum = 0;
+        collision_zero = 0;
         expand_resize();
+        //std::cout << "AFTER_SUM = " << collision_sum << std::endl;
         //std::cout << "ex_end " << std::endl;
     }
     //get the hash
@@ -85,12 +90,17 @@ void set(int64_t key, int64_t value){
         //std::cout << "key = " << key << std::endl;
         //std::cout << "collision = " << collision << std::endl;
     }
-    //std::cout << "hashnumber = " << hashIndex << std::endl;
-    collision = 0;
+    collision_sum += collision;
     hashArray[hashIndex].value = value;
     hashArray[hashIndex].key = key;
     exists[hashIndex] = true;//使用済みにする
     hash_use++;
+    if(collision == 0){
+        collision_zero++;
+    }
+    //std::cout << "collision = " << collision << std::endl;
+    //std::cout << "SIZE = " << hashArray.size() << std::endl;
+    //std::cout << "SUM = " << collision_sum << std::endl;
     //std::cout << "   " << hashIndex << std::endl;
 }
 
@@ -106,14 +116,20 @@ void expand_resize(){
             int64_t hashIndex = hashCode(key);
             //std::cout << "h = " << hashIndex << std::endl;
             //std::cout << "k = " << k << std::endl;
+            int collision = 0;
             while(exists2[hashIndex]){
                 ++hashIndex;
+                ++collision;
                 //wrap around the table
                 hashIndex = hashCode(hashIndex);
             }
             hashArray2[hashIndex].key = key;
             hashArray2[hashIndex].value = value;
             exists2[hashIndex] = true;
+            collision_sum += collision;
+            if(collision == 0){
+                collision_zero++;
+            }
         }
     }
     hashArray = std::move(hashArray2);

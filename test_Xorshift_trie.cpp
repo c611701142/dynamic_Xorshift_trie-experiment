@@ -42,10 +42,10 @@ std::vector<std::string> time_keysets;
 std::vector<std::string> str_list;
 void key_set(){
     //std::string input_name = "s2.txt";
-    std::string input_name = "wordnet-3.0-word";
+    //std::string input_name = "wordnet-3.0-word";
     //std::string input_name = "ipadic-word";
     //std::string input_name = "jawiki-20150118.line";
-    //std::string input_name = "enwiki-20150205.line";
+    std::string input_name = "enwiki-20150205.line";
     std::ifstream ifs(input_name);
     if (!ifs) {
         std::cerr<<"File not found input file: "<< input_name <<std::endl;
@@ -77,7 +77,9 @@ inline uint64_t get_process_size() {
 
 int main(int argc, char* argv[]){
     key_set();
+    
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
     kuroda::xorshift_trie xorshift_try;//Xorshiftトライ呼び出し
     std::cout << "------experiment_start---------- " <<std::endl;
     std::cout << "------Xorshift---------- " <<std::endl;
@@ -119,6 +121,8 @@ int main(int argc, char* argv[]){
     std::cout << "search_time_averave : " << time_sum/10.0 << "[ms]" << std::endl;
     std::cout << "1 key search_time : " << time_sum/1000.0 << "[μs]" <<  std::endl;
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  /*
     kuroda::hash_trie hash_try;//hashtableトライ呼び出し
     std::cout << "------experiment_start---------- " <<std::endl;
     std::cout << "------hashtable---------- " <<std::endl;
@@ -131,6 +135,8 @@ int main(int argc, char* argv[]){
     auto memory2 = get_process_size() - size_begin2;
     std::cout << "constract time : " << time2 << "[ms]" << std::endl;
     std::cout << "memory : " << memory2 << "[bytes]" << std::endl;
+    std::cout << "collision_average : " << hash_try.c_averave << "[回]" << std::endl;
+    std::cout << "collision_zero : " << hash_try.c_zero << "[個]" << std::endl;
     double time_sum2 = 0.0;
     for(int i=0; i < 10; i++) {
       //std::cout << " keisoku " << i << std::endl;
@@ -153,5 +159,7 @@ int main(int argc, char* argv[]){
     }
     std::cout << "search_time_averave : " << time_sum2/10.0 << "[ms]" << std::endl;
     std::cout << "1 key search_time : " << time_sum2/1000.0 << "[μs]" <<  std::endl;
+ */
+ 
     return 0;//プログラム終了
 }
