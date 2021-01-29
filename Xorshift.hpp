@@ -26,15 +26,15 @@ Xorshift(){
 private:
 //std::vector<int> B_ = {13,-7,5};//ビットシフトパターン
 //std::vector<int> B_1 = {5,-7,13};//ビットシフトパターン(逆関数用)
-std::vector<int> B_ = {2,-1,1};//ビットシフトパターン
-std::vector<int> B_1 = {1,-1,2};//ビットシフトパターン(逆関数用)
+std::vector<int> B_ = {5,-9,7};//ビットシフトパターン
+std::vector<int> B_1 = {7,-9,5};//ビットシフトパターン(逆関数用)
 //先行研究のビットシフトパターン
 //{26,-5,6}{7,-30,1}{7,-6}
 uint64_t hash_use = 1;//配列P,C の使用数
 
 public:
 struct DataItem {
-    int p,c;
+    int8_t p,c;
     DataItem(): p(invalid),c(invalid){}
 };
 std::vector<bool> exists;//空判定配列
@@ -50,7 +50,7 @@ uint64_t expand(uint64_t node){
 	//出力値を遷移先候補とパリティ値から復元する
     std::vector<DataItem> pc_2(2*pc_.size());//P,C配列
     std::vector<bool> exists2(2*pc_.size());//空判定配列
-    std::vector<int64_t> place(pc_.size(),invalid);//怪しい
+    std::vector<int64_t> place(pc_.size(),invalid);
     
     place[0] = 0;
     exists2[0] = true;//0番目は使わない

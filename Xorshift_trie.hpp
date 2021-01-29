@@ -20,13 +20,14 @@ private:
 //static constexpr uint8_t kLeafChar = '0';
 
 public:
-//int node_count = 0; 
+int node_count = 0; 
 //int common = 0;
 double c_ave = 0;
 uint64_t c_zero = 0;
 //int mask;
-//int re_take;
+int re_take = 0;
 
+/*
 bool contains_all(const std::vector<std::string>& str_list, int size) {
 
     for(int i=0; i < size; i++) {
@@ -38,7 +39,7 @@ bool contains_all(const std::vector<std::string>& str_list, int size) {
         }
     }
     return true;
-}
+}*/
 
 bool contains(const std::string& str)const{//文字列strが辞書にあるかどうか検索
     uint64_t node = 0; // root
@@ -68,15 +69,15 @@ void xor_try(const std::string& str) {
             node = shift.set(node,c);
             //std::cout << "--new_node--" << "\n";
             node = shift.get_nextnode(node,c);//衝突回数の分修正する
-            //node_count++;
+            node_count++;
         }
     }
     //終端文字格納
     shift.set(node,kLeafChar);
-    //node_count++;
+    node_count++;
     //std::cout << str << " common : " << seto << std::endl;
     //mask = shift.k;
-    //re_take = shift.replace_time;
+    re_take = shift.replace_time;
 }
 
 void display(){

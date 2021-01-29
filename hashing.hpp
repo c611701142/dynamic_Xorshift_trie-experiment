@@ -9,8 +9,8 @@ namespace kuroda {
 
 class HashTableInterface {
 public:
-  virtual int64_t get(int64_t key)const = 0;
-  virtual void set(int64_t key, int64_t value) = 0;
+  virtual int32_t get(int64_t key)const = 0;
+  virtual void set(int64_t key, int32_t value) = 0;
 };
 
 class HashTable : public HashTableInterface{
@@ -19,11 +19,11 @@ class HashTable : public HashTableInterface{
 public:
 //ハッシュテーブルの要素数の初期値
 static constexpr int dell = -2;//データが入っていたがそれが削除されたことを示す値
-static constexpr int64_t invalid = -1;
-static constexpr int64_t default_size = 1ull << 4;
-int64_t k = (std::log(default_size)/std::log(2));//mask値の決定のため、P, C 拡張時にインクリメント
-int64_t collision_sum = 0;
-int64_t collision_zero = 0;
+static constexpr int32_t invalid = -1;
+static constexpr int32_t default_size = 1ull << 4;
+int64_t k = 4;//mask値の決定のため、P, C 拡張時にインクリメント
+int32_t collision_sum = 0;
+int32_t collision_zero = 0;
 
 HashTable(){
 	hashArray.resize(default_size);
@@ -32,22 +32,26 @@ HashTable(){
 }
 
 struct DataItem {
-    int64_t key,value;
+    int64_t key;
+    int32_t value;
     DataItem(): key(invalid),value(invalid){}
 };
 std::vector<DataItem> hashArray;//ハッシュテーブル
 std::vector<bool> exists;//空判定配列
 
+int replace_time = 0;
+
 private://クラスメンバ変数
-int64_t hash_use = 0;//ハッシュテーブルの要素の使用数
+int32_t hash_use = 0;//ハッシュテーブルの要素の使用数
 /* ハッシュ関数*/
 int64_t hashCode(int64_t key)const{
     int64_t maskXos_ = 1ull << k;
-    return (std::hash<int64_t>()(key)) % maskXos_;
+    //return (std::hash<int64_t>()(key)) % maskXos_;
+   return (key / 7) % maskXos_;
 }
 
 public:
-int64_t get(int64_t key)const{
+int32_t get(int64_t key)const{
     //get the hash
     
     int64_t hashIndex = hashCode(key);
@@ -64,7 +68,7 @@ int64_t get(int64_t key)const{
 /* 挿入のための関数 */
 //ハッシュ値の衝突が発生した場合は、再ハッシュを繰り返して、
 //「空状態」バケットを調べていき、空いているバケットを発見したらデータを格納します。
-void set(int64_t key, int64_t value){
+void set(int64_t key, int32_t value){
     //std::cout << "before_expand" << load_factor << "%" << std::endl;
        
     //keyによる探索の期待計算量が、負荷率をqとしてO(1/(1-q))になる
@@ -73,6 +77,7 @@ void set(int64_t key, int64_t value){
         k++;
         collision_sum = 0;
         collision_zero = 0;
+        //replace_time++;
         expand_resize();
         //std::cout << "AFTER_SUM = " << collision_sum << std::endl;
         //std::cout << "ex_end " << std::endl;
@@ -108,11 +113,12 @@ private:
 void expand_resize(){
     std::vector<DataItem> hashArray2(2*hashArray.size());//P,C配列
     std::vector<bool> exists2(2*exists.size());//空判定配列
+    //std::vector<int64_t> place
     exists2[0] = true;//0番目は使わない
-    for(int64_t i = 1;i < hashArray.size();i++){
+    for(int32_t i = 1;i < hashArray.size();i++){
         if(exists[i]){//使用要素にアクセス
             int64_t key = hashArray[i].key;
-            int64_t value = hashArray[i].value;
+            int32_t value = hashArray[i].value;
             int64_t hashIndex = hashCode(key);
             //std::cout << "h = " << hashIndex << std::endl;
             //std::cout << "k = " << k << std::endl;
@@ -135,6 +141,38 @@ void expand_resize(){
     hashArray = std::move(hashArray2);
     exists = std::move(exists2);
 }
+/*
+int64_t replace(int64_t node,std::vector<int64_t>& place,std::vector<DataItem>& hashArray2,std::vector<bool>& exists2){
+    if (place[node] != invalid){//再配置済みの時、無視
+        return invalid;
+    }
+    uint64_t seed = get_seed(node);
+    uint8_t c = seed % 256;
+    int parent = seed >> 8;
+    if (place[parent] == invalid){//前のトライ上で、再配置が終わっていないとき
+        replace(parent,place,pc_2,exists2);
+    }  
+    seed = (place[parent] << 8 ) + c;
+    k++;//mask更新
+    uint64_t x1 = xos(seed);
+    int new_node = x1 >> 8;
+    int collision = 0;
+    while(exists2[new_node]){//使用済みならば再Xos
+        x1 = xos(x1);//出力値をxorに再代入s
+        new_node = x1 >> 8;
+        collision++;
+    } 
+    if(collision > 50){
+        std::cout << "   " << collision <<  std::endl;
+    }
+    int parity = x1 % 256;
+    pc_2[new_node].p = parity;
+    pc_2[new_node].c = collision;
+    exists2[new_node] = true;
+    place[node] = new_node;
+    k--;
+    return 0;
+}*/
     
 };
 
