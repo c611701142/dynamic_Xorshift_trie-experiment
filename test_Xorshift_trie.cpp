@@ -8,7 +8,7 @@
 #include "Xorshift_trie.hpp"
 //#include "hash_trie.hpp"
 #include "hash_trie 2.hpp"
-//#include "dynamic_doublle_array.hpp"
+#include "dynamic_doublle_array.hpp"
 
 namespace {
 
@@ -43,10 +43,10 @@ std::vector<std::string> time_keysets;
 std::vector<std::string> str_list;
 void key_set(){
     //std::string input_name = "s2.txt";
-    //std::string input_name = "wordnet-3.0-word";
-    //std::string input_name = "ipadic-word";
-    //std::string input_name = "jawiki-20150118.line";
-    std::string input_name = "enwiki-20150205.line";
+    //std::string input_name = "wordnet-3.0-word2";
+    //std::string input_name = "ipadic-word2";
+    //std::string input_name = "jawiki2-20150118.line";
+    std::string input_name = "enwiki2-20150205.line";
     std::ifstream ifs(input_name);
     if (!ifs) {
         std::cerr<<"File not found input file: "<< input_name <<std::endl;
@@ -79,7 +79,6 @@ inline uint64_t get_process_size() {
 int main(int argc, char* argv[]){
     key_set();
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /*
     kuroda::xorshift_trie xorshift_try;//Xorshiftトライ呼び出し
     std::cout << "------experiment_start---------- " <<std::endl;
     std::cout << "------Xorshift---------- " <<std::endl;
@@ -91,9 +90,6 @@ int main(int argc, char* argv[]){
     auto time = sw.get_milli_sec();
     auto memory = get_process_size() - size_begin;
     std::cout << "constract time : " << time << "[ms]" << std::endl;
-    //std::cout << "node : " << xorshift_try.node_count << std::endl;
-    //std::cout << "replace_time : " << xorshift_try.re_take << std::endl;
-    //std::cout << "mask : " << xorshift_try.mask << std::endl;
     std::cout << "memory : " << memory << "[bytes]" << std::endl;
     double time_sum = 0.0;
     for(int i=0; i < 10; i++) {
@@ -116,8 +112,7 @@ int main(int argc, char* argv[]){
     }
     std::cout << "1 key search_time : " << time_sum/1000.0 << "[μs]" <<  std::endl;
     xorshift_try.display();
-    */
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     kuroda::hash_trie hash_try;//hashtableトライ呼び出し
     std::cout << "------experiment_start---------- " <<std::endl;
     std::cout << "------hashtable---------- " <<std::endl;
@@ -132,7 +127,7 @@ int main(int argc, char* argv[]){
     std::cout << "memory : " << memory2 << "[bytes]" << std::endl;
     //std::cout << "collision_average : " << hash_try.c_averave << "[回]" << std::endl;
     //std::cout << "collision_zero : " << hash_try.c_zero << "[個]" << std::endl;
-    //std::cout << "node : " << hash_try.node_count << std::endl;
+    //std::cout << "c_max " << hash_try.C_MAX << std::endl;
     //std::cout << "replace_time : " << hash_try.re_take << std::endl;
     double time_sum2 = 0.0;
     for(int i=0; i < 10; i++) {
@@ -156,7 +151,8 @@ int main(int argc, char* argv[]){
     }
     //std::cout << "search_time_averave : " << time_sum2/10.0 << "[ms]" << std::endl;
     std::cout << "1 key search_time : " << time_sum2/1000.0 << "[μs]" <<  std::endl;
-   /*
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+   
     kuroda::StringSet doublle_array_trie;//ダブル配列呼び出し
     std::cout << "------experiment_start---------- " <<std::endl;
     std::cout << "------Doublle_array---------- " <<std::endl;
@@ -191,6 +187,5 @@ int main(int argc, char* argv[]){
       time_sum3 += time3;
     }
     std::cout << "1 key search_time : " << time_sum3/1000.0 << "[μs]" <<  std::endl;
-    */
     return 0;//プログラム終了
 }

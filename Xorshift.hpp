@@ -34,14 +34,15 @@ uint64_t hash_use = 1;//配列P,C の使用数
 
 public:
 struct DataItem {
-    int8_t p,c;
+    //int p,c;
+    uint8_t p;
+    int c;
     DataItem(): p(invalid),c(invalid){}
 };
 std::vector<bool> exists;//空判定配列
 std::vector<DataItem> pc_ ;//P,C配列
 int k = (std::log(default_size)/std::log(2)) + 8;//mask値の決定のため、P, C 拡張時にインクリメント
 int replace_time = 0;
-int collision_max = 0;
 
 private:
 uint64_t expand(uint64_t node){
@@ -73,7 +74,7 @@ int64_t replace(uint64_t node,std::vector<int64_t>& place,std::vector<DataItem>&
         return invalid;
     }
     uint64_t seed = get_seed(node);
-    uint8_t c = seed % 256;
+    int c = seed % 256;
     int parent = seed >> 8;
     if (place[parent] == invalid){//前のトライ上で、再配置が終わっていないとき
         replace(parent,place,pc_2,exists2);
@@ -81,7 +82,7 @@ int64_t replace(uint64_t node,std::vector<int64_t>& place,std::vector<DataItem>&
     seed = (place[parent] << 8 ) + c;
     k++;//mask更新
     uint64_t x1 = xos(seed);
-    int new_node = x1 >> 8;
+    uint64_t new_node = x1 >> 8;
     int collision = 0;
     while(exists2[new_node]){//使用済みならば再Xos
         x1 = xos(x1);//出力値をxorに再代入s
@@ -91,7 +92,7 @@ int64_t replace(uint64_t node,std::vector<int64_t>& place,std::vector<DataItem>&
     if(collision > 50){
         std::cout << "   " << collision <<  std::endl;
     }
-    int parity = x1 % 256;
+    uint8_t parity = x1 % 256;
     pc_2[new_node].p = parity;
     pc_2[new_node].c = collision;
     exists2[new_node] = true;
@@ -183,14 +184,11 @@ uint64_t set(uint64_t node,uint8_t c){//引数 : シード値
 		t = x1 >> 8;
         collision++;
     }
-    int parity = x1 % 256;
+    uint8_t parity = x1 % 256;
     pc_[t].p = parity;
     pc_[t].c = collision;
     exists[t] = true;
 	hash_use++;
-    if(collision_max < collision){
-        collision_max = collision;
-    }
     return node;
 }
 
@@ -198,7 +196,7 @@ uint64_t get_nextnode(uint64_t node,uint8_t c)const{//引数シード値
     uint64_t seed = create_seed(node,c);
 	uint64_t x1 = xos(seed);
     uint64_t t = x1 >> 8;//遷移先
-    int parity = x1 % 256;
+    uint8_t parity = x1 % 256;
     int collision = 0;
     while(exists[t]){//使用済みならば再Xos
         if(pc_[t].p == parity && pc_[t].c == collision){
@@ -210,35 +208,6 @@ uint64_t get_nextnode(uint64_t node,uint8_t c)const{//引数シード値
         collision++;
     }
 	return invalid;
-}
-/*
-int get_parity(uint64_t x)const{//引数シード値
-    uint64_t x1 = xos(x);
-    int t = x1 >> 8;//遷移先
-    int parity = x1 % 256;
-    while(exists[t]){//使用済みならば再Xos
-        if(pc_[t].p == parity){
-            return pc_[t].p;
-        }
-        x1 = xos(x1);//
-        t = x1 >> 8;//遷移先
-        parity = x1 % 256;
-    }
-	return invalid;
-}*/
-
-void display1(){
-    uint64_t node = 0;
-    for(uint64_t i = 1; i < pc_.size();i++){
-        //使用要素のみ表示
-        if(exists[i]){
-            node++;
-            std::cout << i << "    " ;
-            std::cout << pc_[i].p << "  |  " << pc_[i].c << "  " << std::endl;
-            //配列番号
-        }
-    }
-    //std::cout << "node :" << node << std::endl;
 }
 
 

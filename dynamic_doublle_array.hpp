@@ -22,7 +22,7 @@ private:
         bool not_used;
         uint8_t child, sibling;
         Unit() : base(kEmptyBase), check(kEmptyCheck), not_used(true), child(MaxUint8_t), sibling(MaxUint8_t) {}
-        Unit(int b, int c, bool f, uint8_t ch, uint8_t s) : base(b),check(c),not_used(f),child(ch),sibling(s) {}
+        Unit(int64_t b, int64_t c, bool f, uint8_t ch, uint8_t s) : base(b),check(c),not_used(f),child(ch),sibling(s) {}
     };
     struct Tmp {
         int64_t index;

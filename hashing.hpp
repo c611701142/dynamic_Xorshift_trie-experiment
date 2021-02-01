@@ -24,6 +24,7 @@ static constexpr int32_t default_size = 1ull << 4;
 int64_t k = 4;//mask値の決定のため、P, C 拡張時にインクリメント
 int32_t collision_sum = 0;
 int32_t collision_zero = 0;
+int c_max = 0;
 
 HashTable(){
 	hashArray.resize(default_size);
@@ -46,8 +47,7 @@ int32_t hash_use = 0;//ハッシュテーブルの要素の使用数
 /* ハッシュ関数*/
 int64_t hashCode(int64_t key)const{
     int64_t maskXos_ = 1ull << k;
-    //return (std::hash<int64_t>()(key)) % maskXos_;
-   return (key / 7) % maskXos_;
+    return 17*(std::hash<int64_t>()(key)) % maskXos_;
 }
 
 public:
@@ -58,7 +58,7 @@ int32_t get(int64_t key)const{
     while (exists[hashIndex]){
         if (hashArray[hashIndex].key == key)
             return hashArray[hashIndex].value;
-        hashIndex++;
+        hashIndex = hashIndex +  1;
         //wrap around the table
         hashIndex = hashCode(hashIndex);
     }
@@ -77,6 +77,7 @@ void set(int64_t key, int32_t value){
         k++;
         collision_sum = 0;
         collision_zero = 0;
+        c_max = 0;
         //replace_time++;
         expand_resize();
         //std::cout << "AFTER_SUM = " << collision_sum << std::endl;
@@ -88,7 +89,7 @@ void set(int64_t key, int32_t value){
     int collision = 0;//衝突回数 のちにXorshiftで使うかも
     while(exists[hashIndex]){
         //go to next cell
-        ++hashIndex;
+        hashIndex = hashIndex + 1;
         ++collision;
         //wrap around the table
         hashIndex = hashCode(hashIndex);
@@ -102,6 +103,9 @@ void set(int64_t key, int32_t value){
     hash_use++;
     if(collision == 0){
         collision_zero++;
+    }
+    if(c_max < collision){
+        c_max = collision;
     }
     //std::cout << "collision = " << collision << std::endl;
     //std::cout << "SIZE = " << hashArray.size() << std::endl;
@@ -124,7 +128,7 @@ void expand_resize(){
             //std::cout << "k = " << k << std::endl;
             int collision = 0;
             while(exists2[hashIndex]){
-                ++hashIndex;
+                hashIndex = hashIndex + 1;
                 ++collision;
                 //wrap around the table
                 hashIndex = hashCode(hashIndex);
@@ -136,43 +140,15 @@ void expand_resize(){
             if(collision == 0){
                 collision_zero++;
             }
+            if(c_max < collision){
+                c_max = collision;
+            }
         }
     }
     hashArray = std::move(hashArray2);
     exists = std::move(exists2);
 }
-/*
-int64_t replace(int64_t node,std::vector<int64_t>& place,std::vector<DataItem>& hashArray2,std::vector<bool>& exists2){
-    if (place[node] != invalid){//再配置済みの時、無視
-        return invalid;
-    }
-    uint64_t seed = get_seed(node);
-    uint8_t c = seed % 256;
-    int parent = seed >> 8;
-    if (place[parent] == invalid){//前のトライ上で、再配置が終わっていないとき
-        replace(parent,place,pc_2,exists2);
-    }  
-    seed = (place[parent] << 8 ) + c;
-    k++;//mask更新
-    uint64_t x1 = xos(seed);
-    int new_node = x1 >> 8;
-    int collision = 0;
-    while(exists2[new_node]){//使用済みならば再Xos
-        x1 = xos(x1);//出力値をxorに再代入s
-        new_node = x1 >> 8;
-        collision++;
-    } 
-    if(collision > 50){
-        std::cout << "   " << collision <<  std::endl;
-    }
-    int parity = x1 % 256;
-    pc_2[new_node].p = parity;
-    pc_2[new_node].c = collision;
-    exists2[new_node] = true;
-    place[node] = new_node;
-    k--;
-    return 0;
-}*/
+
     
 };
 

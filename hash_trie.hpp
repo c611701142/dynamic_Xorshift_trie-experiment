@@ -25,7 +25,7 @@ public:
 double c_averave  = 0;
 int32_t c_zero = 0;
 int32_t node_count = 0;
-//int re_take = 0;
+int C_MAX = 0;
 
 bool contains(const std::string& str)const{//文字列strが辞書にあるかどうか検索
     int32_t node = 0; // root
@@ -73,7 +73,7 @@ void insert(const std::string& str){ // 文字列strを辞書に追加
     //ht[create_key(node,kLeafChar)] = node_count;
     c_averave = (double)ht.collision_sum/(double)ht.hashArray.size();
     c_zero = ht.collision_zero;
-    //re_take = ht.replace_time;
+    C_MAX = ht.c_max;
    // ht.display();
 
 }

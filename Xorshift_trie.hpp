@@ -25,7 +25,7 @@ int node_count = 0;
 double c_ave = 0;
 uint64_t c_zero = 0;
 //int mask;
-int re_take = 0;
+int c_max = 0;
 
 /*
 bool contains_all(const std::vector<std::string>& str_list, int size) {
@@ -75,9 +75,6 @@ void xor_try(const std::string& str) {
     //終端文字格納
     shift.set(node,kLeafChar);
     node_count++;
-    //std::cout << str << " common : " << seto << std::endl;
-    //mask = shift.k;
-    re_take = shift.replace_time;
 }
 
 void display(){
@@ -88,13 +85,16 @@ void display(){
             if(shift.pc_[i].c == 0){
                 c_zero++;
             }
+            if(c_max < shift.pc_[i].c){
+                c_max = shift.pc_[i].c;
+            }
             c_sum += shift.pc_[i].c;
         }
     }
     double ave = (double)c_sum/(double)shift.pc_.size();
     std::cout << "collision_average" << ave << std::endl;
     std::cout << "collision_zero" << c_zero << std::endl;
-    //std::cout << "mask :" << k << std::endl;
+    std::cout << "c_max :" << c_max << std::endl;
 }
 
 
