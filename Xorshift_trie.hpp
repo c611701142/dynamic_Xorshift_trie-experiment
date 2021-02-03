@@ -20,12 +20,12 @@ private:
 //static constexpr uint8_t kLeafChar = '0';
 
 public:
-int node_count = 0; 
+//int node_count = 0; 
 //int common = 0;
-double c_ave = 0;
-uint64_t c_zero = 0;
+//double c_ave = 0;
+//uint64_t c_zero = 0;
 //int mask;
-int c_max = 0;
+//int c_max = 0;
 
 /*
 bool contains_all(const std::vector<std::string>& str_list, int size) {
@@ -69,14 +69,15 @@ void xor_try(const std::string& str) {
             node = shift.set(node,c);
             //std::cout << "--new_node--" << "\n";
             node = shift.get_nextnode(node,c);//衝突回数の分修正する
-            node_count++;
+            //node_count++;
         }
     }
     //終端文字格納
     shift.set(node,kLeafChar);
-    node_count++;
+   // node_count++;
 }
 
+/*
 void display(){
     uint64_t c_sum = 0;
     for(uint64_t i = 1; i < shift.pc_.size();i++){
@@ -95,7 +96,7 @@ void display(){
     std::cout << "collision_average" << ave << std::endl;
     std::cout << "collision_zero" << c_zero << std::endl;
     std::cout << "c_max :" << c_max << std::endl;
-}
+}*/
 
 
 

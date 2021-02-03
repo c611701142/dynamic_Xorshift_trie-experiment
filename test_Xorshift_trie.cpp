@@ -43,10 +43,10 @@ std::vector<std::string> time_keysets;
 std::vector<std::string> str_list;
 void key_set(){
     //std::string input_name = "s2.txt";
-    //std::string input_name = "wordnet-3.0-word2";
+    std::string input_name = "wordnet-3.0-word2";
     //std::string input_name = "ipadic-word2";
     //std::string input_name = "jawiki2-20150118.line";
-    std::string input_name = "enwiki2-20150205.line";
+    //std::string input_name = "enwiki2-20150205.line";
     std::ifstream ifs(input_name);
     if (!ifs) {
         std::cerr<<"File not found input file: "<< input_name <<std::endl;
@@ -111,7 +111,7 @@ int main(int argc, char* argv[]){
       time_sum += time;
     }
     std::cout << "1 key search_time : " << time_sum/1000.0 << "[μs]" <<  std::endl;
-    xorshift_try.display();
+    //xorshift_try.display();
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     kuroda::hash_trie hash_try;//hashtableトライ呼び出し
     std::cout << "------experiment_start---------- " <<std::endl;
@@ -187,5 +187,6 @@ int main(int argc, char* argv[]){
       time_sum3 += time3;
     }
     std::cout << "1 key search_time : " << time_sum3/1000.0 << "[μs]" <<  std::endl;
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     return 0;//プログラム終了
 }
