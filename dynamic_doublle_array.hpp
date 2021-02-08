@@ -556,7 +556,7 @@ private:
         
         if(bc_[index].not_used == false) {
             //flag = false;
-            E_HEAD = -1;
+            //E_HEAD = -1;
             bc_[index].check = val;
             return;
         }
